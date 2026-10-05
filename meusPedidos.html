@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meus Pedidos - ConectaVida</title>
+    <link rel="stylesheet" href="/public/css/estilos.css" />
+  </head>
+  <body>
+    <header class="topnav">
+      <div class="container nav-inner">
+        <a href="/inicio.html" class="brand"><img src="/img/marca.svg" alt="ConectaVida" />ConectaVida</a>
+        <nav>
+          <a href="/painel.html">Início</a>
+          <a href="/pedidos.html">Pedidos</a>
+          <a href="/meusPedidos.html" class="active">Meus Pedidos</a>
+          <a href="/perfil.html">Perfil</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="heading-row">
+        <div>
+          <h1>Meus pedidos</h1>
+          <p>Veja os pedidos em andamento e os que já foram satisfeitos.</p>
+        </div>
+      </div>
+      <section class="card-list">
+        <article class="card pedido-card">
+          <h3>📦 Preciso de alimentos</h3>
+          <p><strong>📍 Bagé - RS</strong></p>
+          <p>Pedido em andamento</p>
+          <div class="actions">
+            <a href="#" class="btn btn-secondary">Editar</a>
+            <a href="#" class="btn">Excluir</a>
+          </div>
+        </article>
+        <article class="card pedido-card">
+          <h3>📚 Educação para filhos</h3>
+          <p><strong>📍 Pelotas - RS</strong></p>
+          <p>Pedido concluído</p>
+          <div class="actions">
+            <a href="#" class="btn btn-secondary">Ver detalhes</a>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redefinir senha - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <main class="acesso-shell">
+      <div class="acesso-card">
+        <div class="acesso-header">
+          <div class="acesso-logo-wrap">
+            <img src="/img/marca.svg" alt="ConectaVida" class="acesso-logo" />
+          </div>
+          <span class="acesso-badge">Nova senha</span>
+          <h1>Redefinir senha</h1>
+          <p>Crie uma nova senha para continuar usando sua conta.</p>
+        </div>
+
+        <% if (erro) { %><p class="erro"><%= erro %></p><% } %>
+        <% if (sucesso) { %><p class="sucesso"><%= sucesso %></p><% } %>
+
+        <form action="/redefinir-senha" method="POST" class="acesso-form">
+          <input type="hidden" name="token" value="<%= token || '' %>" />
+          <input type="password" name="senha" placeholder="Nova senha" required />
+          <input type="password" name="confirmarSenha" placeholder="Confirmar nova senha" required />
+          <button type="submit" class="btn">Salvar nova senha</button>
+        </form>
+
+        <p class="acesso-link"><a href="/entrar">Voltar para entrar</a></p>
+      </div>
+    </main>
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

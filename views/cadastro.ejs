@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <main class="acesso-shell">
+      <div class="acesso-card">
+        <div class="acesso-header">
+          <div class="acesso-logo-wrap">
+            <img src="/img/marca.svg" alt="ConectaVida" class="acesso-logo" />
+          </div>
+          <span class="acesso-badge">Cadastro</span>
+          <h1>Crie sua conta</h1>
+          <p>Junte-se à rede de apoio da comunidade com um perfil completo e seguro.</p>
+        </div>
+
+        <% if (erro) { %><p class="erro"><%= erro %></p><% } %>
+
+        <form action="/cadastro" method="POST" novalidate class="acesso-form">
+          <input type="text" name="nome" placeholder="Nome" required />
+          <input type="email" name="email" placeholder="E-mail" />
+          <input type="password" name="senha" placeholder="Senha" />
+          <input type="password" name="confirmarSenha" placeholder="Confirmar senha" />
+          <input type="text" name="cidade" placeholder="Bairro / localidade" required />
+          <input type="text" name="telefone" placeholder="Telefone" required />
+
+          <div class="form-bloqueio">
+            <label class="form-label">Tipo de conta</label>
+            <div class="account-type-grid">
+              <label class="account-type-card">
+                <input type="radio" name="tipoUsuario" value="solicitante" checked />
+                <span>
+                  <strong>Sou pessoa que precisa de ajuda</strong>
+                  <small>Quero publicar um pedido para mim.</small>
+                </span>
+              </label>
+              <label class="account-type-card">
+                <input type="radio" name="tipoUsuario" value="voluntario" />
+                <span>
+                  <strong>Sou pessoa que ajuda</strong>
+                  <small>Quero apoiar outras pessoas da comunidade.</small>
+                </span>
+              </label>
+              <label class="account-type-card">
+                <input type="radio" name="tipoUsuario" value="ONG" />
+                <span>
+                  <strong>Sou ONG / Instituição</strong>
+                  <small>Vou intermediar pedidos para alguém sem acesso à plataforma.</small>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <section class="campos-ong" id="camposOng" hidden>
+            <h2>Dados da ONG / Instituição</h2>
+            <input type="text" name="nomeInstituicao" placeholder="Nome da ONG / Instituição" data-ong-required />
+            <input type="text" name="cnpj" placeholder="CNPJ (opcional)" />
+            <input type="text" name="nomeResponsavel" placeholder="Nome do responsável" data-ong-required />
+            <input type="text" name="telefoneInstituicao" placeholder="Telefone / WhatsApp da ONG" data-ong-required />
+            <input type="text" name="bairroAtuacao" placeholder="Bairro de atuação" data-ong-required />
+          </section>
+
+          <button type="submit" class="btn">Cadastrar</button>
+        </form>
+
+        <p class="acesso-link"><a href="/entrar">Já tem conta? Entrar</a></p>
+      </div>
+    </main>
+    <script>
+      const opcoesConta = document.querySelectorAll('input[name="tipoUsuario"]');
+      const camposOng = document.getElementById('camposOng');
+      const camposOngObrigatorios = camposOng.querySelectorAll('[data-ong-required]');
+      function atualizarCamposOng() {
+        const tipoSelecionado = document.querySelector('input[name="tipoUsuario"]:checked');
+        const ehOng = tipoSelecionado && tipoSelecionado.value === 'ONG';
+        camposOng.hidden = !ehOng;
+        camposOngObrigatorios.forEach((campo) => { campo.required = ehOng; });
+      }
+      opcoesConta.forEach((opcao) => opcao.addEventListener('change', atualizarCamposOng));
+      atualizarCamposOng();
+    </script>
+  </body>
+</html>

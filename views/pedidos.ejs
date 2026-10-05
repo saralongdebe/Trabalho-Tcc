@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pedidos - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+
+    <div class="app-shell">
+      <aside class="sidebar-panel">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario ? usuario.nome : 'visitante' %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <a href="/painel" class="nav-link">Painel</a>
+          <a href="/pedidos" class="nav-link active">Pedidos</a>
+          <a href="/notificacoes" class="nav-link">Notificações</a>
+          <a href="/conversas" class="nav-link">Mensagens</a>
+          <a href="/perfil" class="nav-link">Perfil</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div>
+            <span class="page-eyebrow">Comunidade</span>
+            <h1>Pedidos disponíveis</h1>
+          </div>
+          <% if (usuario && usuario.tipoUsuario === 'solicitante') { %>
+            <div class="header-actions">
+              <a class="btn" href="/pedir-ajuda">Novo pedido</a>
+            </div>
+          <% } %>
+        </section>
+
+        <section class="filter-card">
+          <form class="search-form" method="GET" action="/pedidos">
+            <label class="input-label" for="buscaPedidos">Buscar pedidos</label>
+            <div class="search-row">
+              <input id="buscaPedidos" type="text" name="q" value="<%= busca %>" placeholder="Cidade, categoria ou palavra-chave" />
+              <button type="submit" class="btn btn-sm">Buscar</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel-section">
+          <% if (!pedidos.length) { %>
+            <div class="empty-panel">
+              <h3>Nenhum pedido encontrado</h3>
+              <p>Tente outra palavra-chave ou aguarde novas publicações.</p>
+            </div>
+          <% } else { %>
+            <div class="pedido-list">
+              <% pedidos.forEach(function(pedido) { %>
+                <article class="pedido-card featured-card">
+                  <div class="pedido-head">
+                    <div>
+                      <% if (pedido.ehParaTerceiro && pedido.solicitante && pedido.solicitante.tipo === 'ONG') { %>
+                        <span class="category-tag">Pedido via ONG: <%= pedido.solicitante.nomeInstituicao || pedido.solicitante.nome %></span>
+                      <% } %>
+                      <span class="category-tag"><%= pedido.categoria %></span>
+                      <h3><%= pedido.ehParaTerceiro && pedido.nomeBeneficiarioFinal ? pedido.nomeBeneficiarioFinal + (pedido.idadeBeneficiarioFinal ? ', ' + pedido.idadeBeneficiarioFinal + ' anos' : '') : pedido.titulo %></h3>
+                    </div>
+                    <span class="situacao-chip situacao-aberta"><%= pedido.situacao %></span>
+                  </div>
+
+                  <div class="details-row">
+                    <span><strong>Bairro:</strong> <%= pedido.cidade %></span>
+                    <span><strong>Categoria:</strong> <%= pedido.categoria %></span>
+                    <span><strong>Urgência:</strong> Alta</span>
+                  </div>
+
+                  <p class="pedido-description"><%= pedido.descricao %></p>
+                  <% if (pedido.ehParaTerceiro && !pedido.temAcessoInternet) { %><p class="privacy-note">Sem acesso à internet. O contato será feito pela ONG.</p><% } %>
+
+                  <div class="pedido-actions">
+                    <a href="/pedido/<%= pedido._id %>" class="btn btn-secondary btn-sm">Ver pedido</a>
+                  </div>
+                </article>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

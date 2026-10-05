@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro - ConectaVida</title>
+    <link rel="stylesheet" href="/public/css/estilos.css" />
+  </head>
+  <body>
+    <header class="topnav">
+      <div class="container nav-inner">
+        <a href="/inicio.html" class="brand"><img src="/img/marca.svg" alt="ConectaVida" />ConectaVida</a>
+        <nav>
+          <a href="/inicio.html">Início</a>
+          <a href="/entrar.html">Entrar</a>
+          <a href="/cadastro.html" class="active">Cadastro</a>
+          <a href="/pedidos.html">Pedidos</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="form-page">
+        <h1>Criar conta</h1>
+        <p>Escolha seu perfil e comece a se conectar com quem precisa de ajuda.</p>
+        <form novalidate>
+          <div class="form-grid">
+            <input type="text" placeholder="Nome completo" />
+            <input type="email" placeholder="E-mail" />
+            <input type="password" placeholder="Senha" />
+            <input type="text" placeholder="Bairro / localidade" />
+            <input type="text" placeholder="Telefone" />
+          </div>
+          <div class="field-group">
+            <label>Tipo de usuário</label>
+            <div class="radio-group">
+              <label class="radio-card">
+                <input type="radio" name="tipoUsuario" checked />
+                <div class="label-content">
+                  <span>❤️ Preciso de ajuda</span>
+                </div>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="tipoUsuario" />
+                <div class="label-content">
+                  <span>🤝 Quero ser voluntário</span>
+                </div>
+              </label>
+            </div>
+          </div>
+          <a href="/painel.html" class="btn">Criar Conta</a>
+        </form>
+        <div class="form-footer">
+          <a href="/entrar.html">Já tem conta? Entrar</a>
+          <a href="/inicio.html">Voltar para o início</a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

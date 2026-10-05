@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <header class="hero landing-hero">
+      <div class="landing-nav">
+        <a href="/" class="landing-brand">
+          <img src="/img/marca.svg" alt="" />
+          <span>ConectaVida</span>
+        </a>
+        <nav aria-label="Navegação principal">
+          <a href="#projeto">O projeto</a>
+          <a href="/entrar">Entrar</a>
+          <a href="/cadastro" class="landing-nav-cta">Criar conta</a>
+        </nav>
+      </div>
+      <div class="container landing-layout">
+        <div class="hero-badges">
+          <span class="brand-badge">Projeto acadêmico</span>
+          <span class="brand-badge secondary">Apoio comunitário</span>
+        </div>
+        <div class="landing-logo-wrap">
+          <img src="/img/marca.svg" alt="ConectaVida" class="landing-logo" />
+        </div>
+        <h1>ConectaVida</h1>
+        <p class="landing-copy">Uma plataforma web para aproximar pessoas que precisam de apoio de voluntários e iniciativas da comunidade.</p>
+        <div class="buttons">
+          <a href="/cadastro" class="btn">Participar da comunidade</a>
+          <a href="#projeto" class="btn btn-secondary">Conhecer o projeto</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="landing-main">
+      <section class="simple-intro" id="como-funciona">
+        <span class="eyebrow">Objetivo do sistema</span>
+        <h2>Organizar pedidos de ajuda e tornar a colaboração comunitária mais acessível.</h2>
+        <p>O ConectaVida centraliza necessidades, contato entre participantes e acompanhamento das ações em um único ambiente digital.</p>
+      </section>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-index">01</span>
+          <h3>Registre uma necessidade</h3>
+          <p>Descreva o pedido e compartilhe as informações necessárias para que a comunidade possa conhecê-lo.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-index">02</span>
+          <h3>Encontre oportunidades</h3>
+          <p>Voluntários podem consultar pedidos disponíveis e entrar em contato com quem solicitou apoio.</p>
+        </article>
+
+        <article class="feature-card">
+          <span class="feature-index">03</span>
+          <h3>Acompanhe cada etapa</h3>
+          <p>Consulte atualizações e mantenha a comunicação organizada durante o andamento do pedido.</p>
+        </article>
+      </div>
+
+      <section class="landing-purpose" id="projeto">
+        <div>
+          <span class="eyebrow">Conheça o projeto</span>
+          <h2>Uma iniciativa inspirada pela solidariedade da minha família.</h2>
+        </div>
+        <div class="landing-story-copy">
+          <p>Criei este projeto porque sempre gostei de ajudar as pessoas. Desde criança, vejo meus pais ajudando quem precisa, e isso despertou em mim a vontade de fazer o mesmo.</p>
+          <p>Ao perceber o grande número de pessoas que precisam de apoio, senti que poderia criar algo para tornar essa ajuda mais acessível e aproximar quem quer ajudar de quem realmente precisa.</p>
+          <p>Este projeto também é uma forma de inicionagear e manter viva a inspiração que recebi da minha família, principalmente da minha avó. Ela tinha uma bondade surreal e sempre demonstrou carinho, empatia e generosidade. Foi uma das grandes inspirações para a criação do ConectaVida.</p>
+          <p>Espero que, por meio desta plataforma, eu possa incentivar mais pessoas a praticarem a solidariedade e mostrar que pequenas atitudes podem fazer uma grande diferença na vida de alguém.</p>
+          <div class="landing-purpose-current">
+            <strong>Sobre a plataforma</strong>
+            <p>O ConectaVida busca facilitar a visibilidade das demandas locais e apoiar a comunicação entre pessoas, com recursos para publicar pedidos, conversar e acompanhar a situação das solicitações.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

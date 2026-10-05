@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel Administrativo - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar-panel">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario.nome %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <a href="/painel" class="nav-link">Painel</a>
+          <a href="/pedidos" class="nav-link">Pedidos</a>
+          <a href="/notificacoes" class="nav-link">Notificações</a>
+          <a href="/administrador" class="nav-link active">Administração</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div>
+            <span class="page-eyebrow">Administração</span>
+            <h1>Painel administradoristrativo</h1>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-secondary" href="/painel">Voltar</a>
+          </div>
+        </section>
+
+        <section class="summary-strip">
+          <article class="summary-card primary-metric">
+            <span class="summary-label">Usuários cadastrados</span>
+            <strong><%= indicadores.usuarios %></strong>
+            <small>Total registrado</small>
+          </article>
+          <article class="summary-card sucesso-metric">
+            <span class="summary-label">Ajudas concluídas</span>
+            <strong><%= indicadores.concluidos %></strong>
+            <small>Total concluído</small>
+          </article>
+          <article class="summary-card accent-metric">
+            <span class="summary-label">Pedidos ativos</span>
+            <strong><%= indicadores.pedidosAtivos %></strong>
+            <small>Em aberto ou em andamento</small>
+          </article>
+        </section>
+
+        <section class="panel-section">
+          <article class="card">
+            <div class="mini-topline"><span class="section-kicker">Análise</span></div>
+            <h2>Bloqueios recentes</h2>
+            <% if (!bloqueios.length) { %>
+              <div class="empty-panel"><p>Nenhum bloqueio pendente.</p></div>
+            <% } else { %>
+              <div class="notificacao-list">
+                <% bloqueios.forEach(function(bloqueio) { %>
+                  <article class="notificacao-card">
+                    <div><strong><%= bloqueio.solicitante.nome %></strong><span>Ajudante: <%= bloqueio.voluntario.nome %> | Motivo: <%= bloqueio.motivo %></span></div>
+                    <div class="pedido-actions compact-actions">
+                      <span class="badge-pill"><%= bloqueio.situacao %></span>
+                      <form action="/administrador/bloqueios/<%= bloqueio._id %>/analisar" method="POST">
+                        <button type="submit" class="btn btn-sm">Marcar como analisado</button>
+                      </form>
+                    </div>
+                  </article>
+                <% }) %>
+              </div>
+            <% } %>
+          </article>
+        </section>
+
+        <section class="panel-section">
+          <article class="card administrador-summary">
+            <div class="mini-topline">
+              <span class="section-kicker">Resumo</span>
+            </div>
+            <h2>Últimas notificações</h2>
+            <div class="notificacao-list">
+              <% notificacoes.forEach(function(notificacao) { %>
+                <article class="notificacao-card <%= notificacao.lida ? '' : 'unread' %>">
+                  <div>
+                    <strong><%= notificacao.titulo %></strong>
+                    <span><%= notificacao.mensagem %></span>
+                  </div>
+                  <span class="badge-pill">Situação</span>
+                </article>
+              <% }) %>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

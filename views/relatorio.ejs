@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de ajudas - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar-panel">
+        <div class="sidebar-header">
+          <div class="brand-icon"><img src="/img/marca.svg" alt="ConectaVida" class="app-logo" /></div>
+          <div><p class="brand-kicker">ConectaVida</p><p class="sidebar-usuario">Olá, <%= usuario.nome %></p></div>
+        </div>
+        <nav class="side-nav">
+          <a href="/painel" class="nav-link">Painel</a>
+          <a href="/ajudar" class="nav-link">Ajudar</a>
+          <a href="/relatorio" class="nav-link active">Relatório do ajudante</a>
+          <a href="/pedidos" class="nav-link">Pedidos</a>
+          <a href="/notificacoes" class="nav-link">Notificações</a>
+          <a href="/conversas" class="nav-link">Mensagens</a>
+          <a href="/perfil" class="nav-link">Perfil</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div><h1>Relatório do ajudante</h1></div>
+          <div class="header-actions"><a class="btn btn-secondary" href="/painel">Voltar</a></div>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-heading compact-heading"><div><h2>Histórico das suas ajudas</h2></div></div>
+          <% if (!pedidos.length) { %>
+            <div class="empty-panel"><h3>Nenhum dado ainda</h3><p>O histórico aparecerá quando houver uma ajuda registrada.</p></div>
+          <% } else { %>
+            <div class="pedido-list">
+              <% pedidos.forEach(function(pedido) { %>
+                <article class="pedido-card">
+                  <div class="pedido-head">
+                    <div><span class="category-tag"><%= pedido.categoria %></span><h3><%= pedido.titulo %></h3></div>
+                    <span class="situacao-chip <%= pedido.situacao === 'concluido' || pedido.situacao === 'concluída' ? 'situacao-aberta' : 'situacao-em-andamento' %>"><%= pedido.situacao %></span>
+                  </div>
+                  <div class="details-row">
+                    <span><strong>Solicitante:</strong> <%= pedido.solicitante ? pedido.solicitante.nome : 'Indisponível' %></span>
+                    <% if (pedido.ehParaTerceiro) { %><span class="badge-pill">Ajuda intermediada por ONG</span><% } %>
+                  </div>
+                  <div class="details-row">
+                    <span><strong>Estrelas:</strong> <%= pedido.avaliacao ? `${'★'.repeat(pedido.avaliacao)} (${pedido.avaliacao}/5)` : 'Aguardando avaliação' %></span>
+                  </div>
+                  <p><strong>Comentário:</strong> <%= pedido.avaliacao ? (pedido.comentarioAvaliacao || 'Sem comentário.') : 'A pessoa ajudada ainda não deixou um comentário.' %></p>
+                </article>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      </main>
+    </div>
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

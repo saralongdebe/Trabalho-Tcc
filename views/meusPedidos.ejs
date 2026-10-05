@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meus Pedidos - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="app-shell solicitante-shell">
+      <aside class="sidebar-panel solicitante-sidebar">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario.nome %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <a href="/painel" class="nav-link">Painel</a>
+          <a href="/pedir-ajuda" class="nav-link active">Pedir ajuda</a>
+          <a href="/meus-pedidos" class="nav-link active">Meus pedidos</a>
+          <a href="/pedidos" class="nav-link">Pedidos</a>
+          <a href="/perfil" class="nav-link">Perfil</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel solicitante-content">
+        <section class="page-header">
+          <div>
+            <h1>Meus pedidos</h1>
+          </div>
+          <div class="header-actions">
+            <a class="btn" href="/pedir-ajuda">Novo pedido</a>
+          </div>
+        </section>
+
+        <section class="summary-strip">
+          <article class="summary-card">
+            <span class="summary-label">Pedidos publicados</span>
+            <strong><%= pedidos.length %></strong>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Aguardando apoio</span>
+            <strong><%= pedidos.filter((r) => r.situacao !== 'concluido').length %></strong>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Perfil</span>
+            <strong>Quem pede ajuda</strong>
+          </article>
+        </section>
+
+        <section class="panel-section">
+          <% if (editado) { %>
+            <div class="sucesso edit-sucesso" role="status">Seu pedido foi editado com sucesso.</div>
+          <% } %>
+          <div class="section-heading">
+            <div>
+              <h2>Relação de pedidos</h2>
+            </div>
+          </div>
+
+          <% if (!pedidos.length) { %>
+            <div class="empty-panel">
+              <h3>Você ainda não publicou pedidos.</h3>
+              <p>Crie o primeiro pedido para receber apoio.</p>
+            </div>
+          <% } else { %>
+            <div class="pedido-list">
+              <% pedidos.forEach(function(pedido) { %>
+                <article class="pedido-card solicitante-pedido-card">
+                  <div class="pedido-head">
+                    <div>
+                      <span class="category-tag"><%= pedido.categoria %></span>
+                      <h3><%= pedido.titulo %></h3>
+                    </div>
+                    <span class="situacao-chip situacao-aberta"><%= pedido.situacao %></span>
+                  </div>
+
+                  <div class="details-row">
+                    <span><strong>Bairro:</strong> <%= pedido.cidade %></span>
+                    <span><strong>Data:</strong> <%= pedido.dataPedido || pedido.criadoEm.toISOString().slice(0,10) %></span>
+                  </div>
+
+                  <p class="pedido-description"><%= pedido.descricao %></p>
+
+                  <% if (pedido.foto) { %>
+                    <img class="foto-pedido foto-lista-pedido" src="<%= pedido.foto %>" alt="Foto anexada ao pedido" />
+                  <% } %>
+
+                  <div class="details-row">
+                    <span><strong>Ajudante:</strong> <%= pedido.voluntario ? pedido.voluntario.nome : 'Aguardando' %></span>
+                  </div>
+
+                  <div class="pedido-actions compact-actions">
+                    <a class="btn btn-secondary btn-sm" href="/pedido/<%= pedido._id %>">Visualizar</a>
+                    <a class="btn btn-secondary btn-sm" href="/pedido/<%= pedido._id %>/editar">Editar</a>
+                    <form action="/pedido/<%= pedido._id %>/excluir" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este pedido? Essa ação não pode ser desfeita.');">
+                      <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                    </form>
+                  </div>
+                </article>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

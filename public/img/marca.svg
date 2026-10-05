@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="210" viewBox="0 0 760 210" role="img" aria-label="ConectaVida logo">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#12b6b0" />
+      <stop offset="0.52" stop-color="#1c9ec9" />
+      <stop offset="1" stop-color="#1e5eb1" />
+    </linearGradient>
+    <linearGradient id="heartFill" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#edfaff" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="14" stdDeviation="9" flood-color="#1b4f7d" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <rect x="22" y="26" width="154" height="154" rx="40" fill="url(#bg)"/>
+
+    <g fill="#ffffff" opacity="0.92">
+      <circle cx="70" cy="75" r="20"/>
+      <circle cx="128" cy="75" r="20"/>
+      <path d="M49 118c12-18 25-28 40-28s28 10 40 28v18H49v-18z"/>
+      <path d="M109 118c12-18 25-28 40-28s28 10 40 28v18H109v-18z"/>
+    </g>
+
+    <path d="M77 102c-7-12-23-14-31-4-8 10-7 23 3 34l28 28 28-28c10-11 11-24 3-34-8-10-24-8-31 4z" fill="url(#heartFill)"/>
+    <path d="M159 102c-7-12-23-14-31-4-8 10-7 23 3 34l28 28 28-28c10-11 11-24 3-34-8-10-24-8-31 4z" fill="url(#heartFill)" opacity="0.92"/>
+
+    <path d="M76 98c12-13 23-17 38-19 9 8 17 17 21 29-10 17-23 29-47 40-24-11-37-23-47-40 4-12 13-21 35-10z" fill="rgba(255,255,255,0.10)"/>
+    <path d="M158 98c12-13 23-17 38-19 9 8 17 17 21 29-10 17-23 29-47 40-24-11-37-23-47-40 4-12 13-21 35-10z" fill="rgba(255,255,255,0.10)"/>
+
+    <path d="M92 126c8 8 13 12 19 12s11-4 19-12" stroke="#cfeffc" stroke-width="4" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <g fill="#1d3757" font-family="Segoe UI, Arial, sans-serif" font-weight="800" letter-spacing="-0.05em">
+    <text x="205" y="103" font-size="56">Conecta</text>
+    <text x="456" y="103" font-size="56" fill="#1aa88d">Vida</text>
+  </g>
+</svg>

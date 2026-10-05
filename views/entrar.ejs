@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entrar - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <main class="acesso-shell">
+      <div class="acesso-card">
+        <div class="acesso-header">
+          <div class="acesso-logo-wrap">
+            <img src="/img/marca.svg" alt="ConectaVida" class="acesso-logo" />
+          </div>
+          <span class="acesso-badge">Acesso</span>
+          <h1>Entrar</h1>
+          <p>Conecte-se para acompanhar pedidos, responder mensagens e ajudar sua comunidade.</p>
+        </div>
+
+        <% if (erro) { %><p class="erro"><%= erro %></p><% } %>
+
+        <% if (typeof sucesso !== 'undefined' && sucesso) { %>
+          <div class="situacao-banner sucesso-banner">
+            <strong>Sucesso!</strong>
+            <span><%= sucesso %></span>
+          </div>
+        <% } %>
+
+        <form action="/entrar" method="POST" class="acesso-form">
+          <input type="email" name="email" placeholder="E-mail" required />
+          <input type="password" name="senha" placeholder="Senha" required />
+          <button type="submit" class="btn">Entrar</button>
+        </form>
+
+        <p class="acesso-link"><a href="/esqueci-senha">Esqueci minha senha</a></p>
+        <p class="acesso-link"><a href="/cadastro">Criar conta</a></p>
+      </div>
+    </main>
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

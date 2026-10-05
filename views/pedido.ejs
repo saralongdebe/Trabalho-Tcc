@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pedido - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="detail-shell">
+      <% if (pedido) { %>
+        <main class="content-panel">
+          <section class="page-header">
+            <div>
+              <span class="page-eyebrow">Detalhes</span>
+              <h1>Pedido em destaque</h1>
+            </div>
+            <div class="header-actions">
+              <a class="btn btn-secondary" href="/pedidos">Voltar ao pedidos</a>
+            </div>
+          </section>
+
+          <article class="pedido-detail card">
+            <div class="detail-header">
+              <div>
+                <span class="category-tag"><%= pedido.categoria %></span>
+                <h1><%= pedido.titulo %></h1>
+              </div>
+              <span class="situacao-chip <%= pedido.situacao === 'em andamento' ? 'situacao-em-andamento' : 'situacao-aberta' %>"><%= pedido.situacao %></span>
+            </div>
+
+            <div class="detail-meta">
+              <span class="badge">Bairro: <%= pedido.cidade %></span>
+              <span class="badge">Categoria: <%= pedido.categoria %></span>
+              <span class="badge">Situação: <%= pedido.situacao %></span>
+            </div>
+
+            <div class="detail-body">
+              <p><strong>Descrição:</strong> <%= pedido.descricao %></p>
+              <% if (pedido.foto) { %>
+                <p><strong>Foto:</strong></p>
+                <img class="foto-pedido" src="<%= pedido.foto %>" alt="Foto anexada ao pedido" />
+              <% } %>
+              <p><strong>Solicitante:</strong> Pessoa que precisa de ajuda</p>
+
+              <% const idSolicitantePedido = pedido.solicitante ? String(pedido.solicitante._id || pedido.solicitante) : null; %>
+              <% const idVoluntarioPedido = pedido.voluntario ? String(pedido.voluntario._id || pedido.voluntario) : null; %>
+              <% const idUsuarioAtual = usuario ? String(usuario._id) : null; %>
+              <% const canSeeContact = usuario && (
+                (idSolicitantePedido && idUsuarioAtual && idSolicitantePedido === idUsuarioAtual) ||
+                (idVoluntarioPedido && idUsuarioAtual && idVoluntarioPedido === idUsuarioAtual) ||
+                (usuario.perfilAcesso === 'administrador')
+              ); %>
+
+              <% if (canSeeContact) { %>
+                <p><strong>Telefone:</strong> <%= pedido.telefone %></p>
+              <% } else { %>
+                <p class="privacy-note">Contato privado: o telefone ficará visível somente para o ajudante responsável.</p>
+              <% } %>
+            </div>
+
+            <div class="detail-actions">
+              <% if (usuario && usuario.tipoUsuario === 'voluntario' && pedido.situacao !== 'concluido' && idSolicitantePedido && idUsuarioAtual && idSolicitantePedido !== idUsuarioAtual) { %>
+                <% if (!pedido.voluntario || idVoluntarioPedido === idUsuarioAtual) { %>
+                  <form action="/pedido/<%= pedido._id %>/quero-ajudar" method="POST">
+                    <button type="submit" class="btn">Quero ajudar</button>
+                  </form>
+                <% } else { %>
+                  <span class="badge-pill">Pedido já está sendo acompanhado.</span>
+                <% } %>
+              <% } else if (!usuario) { %>
+                <span class="badge-pill">Faça entrar para se voluntariar.</span>
+              <% } %>
+            </div>
+          </article>
+
+          <% if (pedido.situacao === 'concluido' && idSolicitantePedido && idUsuarioAtual && idSolicitantePedido === idUsuarioAtual) { %>
+            <% if (!pedido.avaliacao) { %>
+              <section class="panel-section">
+                <article class="card">
+                  <div class="mini-topline">
+                    <span class="section-kicker">Avaliação</span>
+                  </div>
+                  <h2>Avaliar ajudante</h2>
+                  <form class="acesso-form" action="/pedido/<%= pedido._id %>/avaliar" method="POST">
+                    <label class="form-label" for="avaliacao">Avaliação com estrelas</label>
+                    <select name="avaliacao" id="avaliacao" required>
+                      <option value="1">1 estrela</option>
+                      <option value="2">2 estrelas</option>
+                      <option value="3">3 estrelas</option>
+                      <option value="4">4 estrelas</option>
+                      <option value="5">5 estrelas</option>
+                    </select>
+                    <textarea name="comentarioAvaliacao" placeholder="Comentário opcional"></textarea>
+                    <button type="submit" class="btn">Enviar avaliação</button>
+                  </form>
+                </article>
+              </section>
+            <% } else { %>
+              <section class="panel-section">
+                <article class="card">
+                  <div class="mini-topline">
+                    <span class="section-kicker">Avaliação</span>
+                  </div>
+                  <h2>Sua avaliação</h2>
+                  <p><strong>Estrelas:</strong> <%= pedido.avaliacao %></p>
+                  <p><strong>Comentário:</strong> <%= pedido.comentarioAvaliacao %></p>
+                </article>
+              </section>
+            <% } %>
+          <% } %>
+
+          <% if (conversasThread) { %>
+            <section class="panel-section pedido-conversas-section">
+              <div class="section-heading compact-heading">
+                <div>
+                  <span class="section-kicker">Conversa</span>
+                  <h2>Conversa do pedido</h2>
+                </div>
+              </div>
+              <article class="conversas-card">
+                <div class="conversas-list">
+                  <% if (conversasThread.mensagens && conversasThread.mensagens.length) { %>
+                    <% conversasThread.mensagens.forEach(function(mensagem) { %>
+                      <div class="conversas-mensagem-row">
+                        <span class="conversas-author"><%= mensagem.nomeRemetente %></span>
+                        <span class="conversas-text"><%= mensagem.mensagem %></span>
+                      </div>
+                    <% }) %>
+                  <% } else { %>
+                    <div class="empty-panel">
+                      <h3>Ainda não há mensagens</h3>
+                      <p>Comece a conversa com o ajudante ou com quem pediu ajuda.</p>
+                    </div>
+                  <% } %>
+                </div>
+
+                <form class="conversas-form pedido-conversas-form" action="/conversas" method="POST">
+                  <input type="hidden" name="idPedido" value="<%= pedido._id %>" />
+                  <label class="input-label" for="textoMensagem">Mensagem</label>
+                  <textarea id="textoMensagem" name="mensagem" placeholder="Escreva sua mensagem" required></textarea>
+                  <button type="submit" class="btn btn-sm">Enviar</button>
+                </form>
+              </article>
+            </section>
+          <% } else { %>
+            <section class="panel-section pedido-conversas-section">
+              <div class="section-heading compact-heading">
+                <div>
+                  <span class="section-kicker">Conversa</span>
+                  <h2>Conversa do pedido</h2>
+                </div>
+              </div>
+              <article class="conversas-card">
+                <div class="empty-panel">
+                  <h3>Conversa ainda não criada</h3>
+                  <p>O conversas será liberado quando houver um ajudante assumindo o pedido.</p>
+                </div>
+              </article>
+            </section>
+          <% } %>
+        </main>
+      <% } %>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

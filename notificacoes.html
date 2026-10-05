@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notificações - ConectaVida</title>
+    <link rel="stylesheet" href="/public/css/estilos.css" />
+  </head>
+  <body>
+    <header class="topnav">
+      <div class="container nav-inner">
+        <a href="/inicio.html" class="brand"><img src="/img/marca.svg" alt="ConectaVida" />ConectaVida</a>
+        <nav>
+          <a href="/painel.html">Início</a>
+          <a href="/pedidos.html">Pedidos</a>
+          <a href="/notificacoes.html" class="active">Notificações</a>
+          <a href="/perfil.html">Perfil</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="heading-row">
+        <div>
+          <h1>Notificações</h1>
+          <p>Fique por dentro das mensagens e atualizações de pedidos.</p>
+        </div>
+      </div>
+      <section class="card-list">
+        <article class="card pedido-card">
+          <h3>Nova mensagem</h3>
+          <p><strong>Voluntário:</strong> João Silva</p>
+          <p>Ele se ofereceu para entregar a cesta básica hoje à tarde.</p>
+          <div class="actions">
+            <a href="/conversas.html" class="btn">Ver conversa</a>
+          </div>
+        </article>
+        <article class="card pedido-card">
+          <h3>Pedido atualizado</h3>
+          <p><strong>Maria Silva</strong> compartilhou um novo detalhe sobre o pedido.</p>
+          <div class="actions">
+            <a href="/meusPedidos.html" class="btn btn-secondary">Ver pedido</a>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

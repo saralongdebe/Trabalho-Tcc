@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novo Pedido - ConectaVida</title>
+    <link rel="stylesheet" href="/public/css/estilos.css" />
+  </head>
+  <body>
+    <header class="topnav">
+      <div class="container nav-inner">
+        <a href="/inicio.html" class="brand"><img src="/img/marca.svg" alt="ConectaVida" />ConectaVida</a>
+        <nav>
+          <a href="/painel.html">Início</a>
+          <a href="/pedidos.html">Pedidos</a>
+          <a href="/novoPedido.html" class="active">Novo pedido</a>
+          <a href="/conversas.html">Mensagens</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="form-page">
+        <h1>Novo pedido</h1>
+        <p>Conte o que você precisa e ajude voluntários a entender como apoiar.</p>
+        <form>
+          <div class="form-grid">
+            <input type="text" placeholder="Título do pedido" required />
+            <select>
+              <option value="">Categoria</option>
+              <option>🍞 Alimentos</option>
+              <option>💊 Saúde</option>
+              <option>👕 Roupas</option>
+              <option>🏠 Moradia</option>
+              <option>🛠️ Serviço</option>
+              <option>💰 Dinheiro</option>
+              <option>📚 Educação</option>
+              <option>🚗 Transporte</option>
+              <option>❤️ Outros</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Descrição</label>
+            <textarea placeholder="Descreva sua necessidade" required></textarea>
+          </div>
+          <div class="form-grid">
+            <input type="text" placeholder="Bairro / localidade" required />
+            <input type="text" placeholder="Telefone" required />
+          </div>
+          <div class="field-group">
+            <label>Foto (opcional)</label>
+            <input type="text" placeholder="URL da imagem" />
+          </div>
+          <a href="/pedidos.html" class="btn">Publicar Pedido</a>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

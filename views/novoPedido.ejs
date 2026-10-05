@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novo Pedido - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="acesso-shell">
+      <main class="acesso-card">
+        <div class="acesso-header">
+          <div class="acesso-logo-wrap">
+            <img src="/img/marca.svg" alt="ConectaVida" class="acesso-logo" />
+          </div>
+            <span class="acesso-badge"><%= editando ? 'Edição' : 'Solicitação' %></span>
+            <h1><%= editando ? 'Editar pedido' : 'Publicar pedido' %></h1>
+            <p><%= editando ? 'Atualize os dados da sua solicitação.' : 'Descreva a necessidade para conectar com voluntários da sua região.' %></p>
+        </div>
+
+        <% if (erro) { %><p class="erro"><%= erro %></p><% } %>
+
+            <form class="acesso-form" action="<%= editando ? `/pedido/${pedido._id}/editar` : '/novo-pedido' %>" method="POST" enctype="multipart/form-data">
+          <div class="form-grid">
+            <input type="text" name="titulo" placeholder="Título da solicitação" value="<%= pedido ? pedido.titulo : '' %>" required />
+            <select name="categoria" required>
+              <option value="" <%= !pedido ? 'selected' : '' %>>Categoria</option>
+              <% ['Alimentação', 'Doações', 'Transporte', 'Educação', 'Animais', 'Acessibilidade', 'Moradia', 'Serviço', 'Dinheiro', 'Outros'].forEach(function(categoria) { %>
+                <option value="<%= categoria %>" <%= pedido && pedido.categoria === categoria ? 'selected' : '' %>><%= categoria %></option>
+              <% }) %>
+            </select>
+            <textarea name="descricao" placeholder="Descreva sua necessidade" required><%= pedido ? pedido.descricao : '' %></textarea>
+            <input type="text" name="cidade" placeholder="Bairro / localidade" value="<%= pedido ? pedido.cidade : '' %>" required />
+            <input type="text" name="localizacaoAproximada" placeholder="Localização aproximada" value="<%= pedido ? pedido.localizacaoAproximada : '' %>" />
+            <input type="date" name="dataPedido" placeholder="Data" value="<%= pedido ? pedido.dataPedido : '' %>" />
+            <input type="time" name="horarioPedido" placeholder="Horário" value="<%= pedido ? pedido.horarioPedido : '' %>" />
+            <input type="text" name="telefone" placeholder="Telefone para contato" value="<%= pedido ? pedido.telefone : '' %>" required />
+            <textarea name="informacoesAdicionais" placeholder="Informações adicionais"><%= pedido ? pedido.informacoesAdicionais : '' %></textarea>
+            <label class="file-input-label" for="foto">Adicionar foto (opcional)</label>
+            <input id="foto" type="file" name="foto" accept="image/*" />
+            <% if (pedido && pedido.foto) { %><p class="privacy-note">Uma foto já está anexada. Escolha outra para substituir.</p><% } %>
+          </div>
+
+          <% if (usuario.tipo === 'ONG') { %>
+            <fieldset class="third-party-fields">
+              <legend>Destinatário da ajuda</legend>
+              <label class="switch-row" for="ehParaTerceiro">
+                <span>Este pedido é para mim mesmo?</span>
+                <select id="ehParaTerceiro" name="ehParaTerceiro">
+                  <option value="false" <%= !pedido || pedido.ehParaTerceiro !== true ? 'selected' : '' %>>Sim</option>
+                  <option value="true" <%= pedido && pedido.ehParaTerceiro === true ? 'selected' : '' %>>Não</option>
+                </select>
+              </label>
+              <div class="campos-beneficiario" id="camposBeneficiario" hidden>
+                <input type="text" name="nomeBeneficiarioFinal" placeholder="Nome da pessoa que realmente precisa" value="<%= pedido && pedido.nomeBeneficiarioFinal ? pedido.nomeBeneficiarioFinal : '' %>" />
+                <input type="number" name="idadeBeneficiarioFinal" min="0" placeholder="Idade (opcional)" value="<%= pedido && pedido.idadeBeneficiarioFinal ? pedido.idadeBeneficiarioFinal : '' %>" />
+                <input type="text" name="enderecoBeneficiarioFinal" placeholder="Bairro / Endereço aproximado" value="<%= pedido && pedido.enderecoBeneficiarioFinal ? pedido.enderecoBeneficiarioFinal : '' %>" />
+                <input type="text" name="telefoneBeneficiarioFinal" placeholder="Telefone da pessoa (opcional)" value="<%= pedido && pedido.telefoneBeneficiarioFinal ? pedido.telefoneBeneficiarioFinal : '' %>" />
+                <textarea name="descricaoSituacaoBeneficiario" placeholder="Descrição da situação da pessoa"><%= pedido && pedido.descricaoSituacaoBeneficiario ? pedido.descricaoSituacaoBeneficiario : '' %></textarea>
+                <label class="checkbox-row"><input type="checkbox" name="autorizacaoLgpd" required <%= pedido && pedido.autorizacaoLgpd ? 'checked' : '' %> /> Essa pessoa autorizou a ONG a pedir ajuda por ela (LGPD)</label>
+                <label class="input-label" for="temAcessoInternet">A pessoa tem acesso à internet?</label>
+                <select id="temAcessoInternet" name="temAcessoInternet"><option value="sim">Sim</option><option value="nao">Não</option></select>
+                <p class="privacy-note">Se não tiver acesso, o contato será feito pela ONG.</p>
+              </div>
+            </fieldset>
+          <% } %>
+
+          <div class="form-footer">
+                        <button type="submit" class="btn"><%= editando ? 'Salvar alterações' : 'Enviar pedido de ajuda' %></button>
+            <a class="btn btn-secondary" href="/painel">Voltar ao painel</a>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <script>
+      const seletorTerceiro = document.getElementById('ehParaTerceiro');
+      const camposBeneficiario = document.getElementById('camposBeneficiario');
+      function atualizarCamposBeneficiario() {
+        if (!seletorTerceiro) return;
+        const ehParaTerceiro = seletorTerceiro.value === 'true';
+        camposBeneficiario.hidden = !ehParaTerceiro;
+        camposBeneficiario.querySelectorAll('input, textarea, select').forEach((campo) => {
+          campo.required = ehParaTerceiro && (campo.name === 'nomeBeneficiarioFinal' || campo.name === 'autorizacaoLgpd');
+        });
+      }
+      if (seletorTerceiro) {
+        seletorTerceiro.addEventListener('change', atualizarCamposBeneficiario);
+        atualizarCamposBeneficiario();
+      }
+    </script>
+
+    <% if (publicado) { %>
+      <div class="confirmation-backdrop" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacao">
+        <div class="confirmation-modal">
+          <div class="confirmation-check" aria-hidden="true">✓</div>
+          <h2 id="tituloConfirmacao">Seu pedido foi postado!</h2>
+          <p>Já aguarde que um voluntário vai entrar em contato.</p>
+          <a class="btn confirmation-button" href="/meus-pedidos">Entendi</a>
+        </div>
+      </div>
+    <% } %>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

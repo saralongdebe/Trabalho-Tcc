@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notificações - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar-panel">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario.nome %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <a href="/painel" class="nav-link">Painel</a>
+          <a href="/pedidos" class="nav-link">Pedidos</a>
+          <% if (usuario.tipoUsuario === 'voluntario') { %>
+            <a href="/relatorio" class="nav-link">Relatório do ajudante</a>
+          <% } %>
+          <a href="/notificacoes" class="nav-link active">Notificações</a>
+          <a href="/conversas" class="nav-link">Mensagens</a>
+          <a href="/perfil" class="nav-link">Perfil</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div>
+            <h1>Notificações</h1>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-secondary" href="/painel">Voltar</a>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-heading compact-heading">
+            <div>
+              <h2>Mensagens recentes</h2>
+            </div>
+          </div>
+
+          <div class="notificacao-list">
+            <% notificacoes.forEach(function(notificacao) { %>
+              <article class="notificacao-card <%= notificacao.lida ? '' : 'unread' %>">
+                <div>
+                  <strong><%= notificacao.titulo %></strong>
+                  <span><%= notificacao.mensagem %></span>
+                </div>
+                <% if (!notificacao.lida) { %>
+                  <form action="/notificacoes/<%= notificacao.id %>/ler" method="POST">
+                    <button type="submit" class="btn btn-sm">Marcar como lida</button>
+                  </form>
+                <% } else { %>
+                  <span class="badge-pill">Lida</span>
+                <% } %>
+              </article>
+            <% }) %>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

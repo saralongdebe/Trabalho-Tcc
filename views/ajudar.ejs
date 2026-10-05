@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajudar - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar-panel voluntario-sidebar">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario ? usuario.nome : 'visitante' %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav voluntario-nav">
+          <a href="/ajudar" class="nav-link active">Ajudar</a>
+          <a href="/relatorio" class="nav-link">Relatório do ajudante</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div>
+            <span class="page-eyebrow">Painel de voluntariado</span>
+            <h1>Pedidos disponíveis</h1>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-secondary" href="/pedidos">Ver pedidos</a>
+          </div>
+        </section>
+
+        <section class="summary-strip">
+          <article class="summary-card">
+            <span class="summary-label">Pedidos abertos</span>
+            <strong><%= pedidos.length %></strong>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Tarefas assumidas</span>
+            <strong><%= pedidosAceitos && pedidosAceitos.length ? pedidosAceitos.length : 0 %></strong>
+          </article>
+          <article class="summary-card">
+            <span class="summary-label">Situação do seu perfil</span>
+            <strong>Voluntário</strong>
+          </article>
+        </section>
+
+        <section class="filter-card">
+          <form class="search-form" method="GET" action="/ajudar">
+            <label class="input-label" for="buscaAjuda">Buscar pedidos</label>
+            <div class="search-row">
+              <input id="buscaAjuda" type="text" name="q" value="<%= busca %>" placeholder="Cidade, categoria ou palavra-chave" />
+              <button type="submit" class="btn btn-sm">Buscar</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">Solicitações ativas</span>
+              <h2>Pedidos disponíveis</h2>
+            </div>
+          </div>
+
+          <% if (!pedidos.length) { %>
+            <div class="empty-panel">
+              <h3>Nenhum pedido aberto encontrado</h3>
+              <p>Os pedidos aparecerão aqui quando forem publicados.</p>
+            </div>
+          <% } else { %>
+            <div class="pedido-list">
+              <% pedidos.forEach(function(pedido) { %>
+                <article class="pedido-card help-pedido-card">
+                  <div class="pedido-head">
+                    <div>
+                      <% if (pedido.ehParaTerceiro && pedido.solicitante && pedido.solicitante.tipo === 'ONG') { %>
+                        <span class="category-tag">Pedido via ONG: <%= pedido.solicitante.nomeInstituicao || pedido.solicitante.nome %></span>
+                      <% } %>
+                      <span class="category-tag"><%= pedido.categoria %></span>
+                      <h3><%= pedido.ehParaTerceiro && pedido.nomeBeneficiarioFinal ? pedido.nomeBeneficiarioFinal + (pedido.idadeBeneficiarioFinal ? ', ' + pedido.idadeBeneficiarioFinal + ' anos' : '') : pedido.titulo %></h3>
+                    </div>
+                    <span class="situacao-chip situacao-aberta"><%= pedido.situacao %></span>
+                  </div>
+
+                  <div class="details-row">
+                    <span><strong>Bairro:</strong> <%= pedido.cidade %></span>
+                    <span><strong>Publicado por:</strong> <%= pedido.ehParaTerceiro && pedido.solicitante && pedido.solicitante.tipo === 'ONG' ? (pedido.solicitante.nomeInstituicao || pedido.solicitante.nome) : 'Pessoa que precisa de ajuda' %></span>
+                    <% if (pedido.ehParaTerceiro && !pedido.temAcessoInternet) { %><span><strong>Contato:</strong> via ONG, sem acesso à internet</span><% } %>
+                  </div>
+
+                  <p class="pedido-description"><%= pedido.descricao %></p>
+
+                  <div class="pedido-actions">
+                    <a href="/pedido/<%= pedido._id %>" class="btn btn-secondary btn-sm">Detalhes</a>
+                    <form action="/pedido/<%= pedido._id %>/quero-ajudar" method="POST">
+                      <button type="submit" class="btn btn-sm">Quero ajudar</button>
+                    </form>
+                  </div>
+                </article>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+
+        <section class="panel-section accepted-section">
+          <div class="section-heading compact-heading">
+            <div>
+              <span class="section-kicker">Acompanhamento</span>
+              <h2>Pedidos que você assumiu</h2>
+            </div>
+          </div>
+
+          <% if (!pedidosAceitos || !pedidosAceitos.length) { %>
+            <div class="empty-panel soft-empty">
+              <p>Você ainda não assumiu nenhuma tarefa.</p>
+            </div>
+          <% } else { %>
+            <div class="pedido-list accepted-list">
+              <% pedidosAceitos.forEach(function(pedido) { %>
+                <article class="pedido-card accepted-card">
+                  <div class="pedido-head">
+                    <div>
+                      <span class="category-tag"><%= pedido.categoria %></span>
+                      <h3><%= pedido.titulo %></h3>
+                    </div>
+                    <span class="situacao-chip situacao-em-andamento"><%= pedido.situacao %></span>
+                  </div>
+
+                  <div class="details-row">
+                    <span><strong>Bairro:</strong> <%= pedido.cidade %></span>
+                    <span><strong>Solicitante:</strong> <%= pedido.solicitante && pedido.solicitante.nome ? pedido.solicitante.nome : 'Pessoa que precisa de ajuda' %></span>
+                  </div>
+
+                  <% if (pedido.situacao !== 'concluido') { %>
+                    <div class="pedido-actions compact-actions">
+                      <form action="/pedido/<%= pedido._id %>/concluir" method="POST">
+                        <button type="submit" class="btn btn-sm">Marcar como concluído</button>
+                      </form>
+                    </div>
+                  <% } else { %>
+                    <div class="pedido-actions compact-actions">
+                      <span class="badge-pill">Pedido concluído</span>
+                    </div>
+                  <% } %>
+                </article>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

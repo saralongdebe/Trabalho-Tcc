@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+
+    <div class="app-shell perfil-shell">
+      <aside class="sidebar-panel perfil-sidebar">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario.nome %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav perfil-nav">
+          <a href="/painel" class="nav-link">Painel</a>
+          <% if (usuario.tipoUsuario === 'solicitante') { %>
+            <a href="/pedir-ajuda" class="nav-link">Pedir ajuda</a>
+            <a href="/meus-pedidos" class="nav-link">Meus pedidos</a>
+          <% } else { %>
+            <a href="/ajudar" class="nav-link">Ajudar</a>
+            <a href="/relatorio" class="nav-link">Relatório do ajudante</a>
+          <% } %>
+          <a href="/pedidos" class="nav-link">Pedidos</a>
+          <a href="/notificacoes" class="nav-link">Notificações</a>
+          <a href="/conversas" class="nav-link">Mensagens</a>
+          <a href="/perfil" class="nav-link active">Perfil</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div>
+            <h1>Meu perfil</h1>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-secondary" href="/painel">Voltar</a>
+          </div>
+        </section>
+
+        <section class="panel-section perfil-panel">
+          <% if (erro) { %><p class="erro"><%= erro %></p><% } %>
+          <% if (sucesso) { %><p class="sucesso"><%= sucesso %></p><% } %>
+          <article class="perfil-card perfil-layout-card">
+            <div class="perfil-hero">
+              <div class="perfil-avatar"><%= usuario.nome.charAt(0).toUpperCase() %></div>
+              <div>
+                <span class="page-eyebrow">Conta</span>
+                <h2><%= usuario.nome %></h2>
+              </div>
+            </div>
+
+            <div class="perfil-grid">
+              <form class="acesso-form perfil-edit-form" action="/perfil" method="POST">
+                <label class="form-label" for="nomePerfil">Nome</label>
+                <input id="nomePerfil" type="text" name="nome" value="<%= usuario.nome %>" required />
+                <label class="form-label" for="emailPerfil">E-mail</label>
+                <input id="emailPerfil" type="email" name="email" value="<%= usuario.email %>" required />
+                <label class="form-label" for="cidadePerfil">Bairro / localidade</label>
+                <input id="cidadePerfil" type="text" name="cidade" value="<%= usuario.cidade %>" required />
+                <label class="form-label" for="telefonePerfil">Telefone</label>
+                <input id="telefonePerfil" type="text" name="telefone" value="<%= usuario.telefone %>" required />
+                <label class="form-label" for="senhaPerfil">Nova senha (opcional)</label>
+                <input id="senhaPerfil" type="password" name="senha" placeholder="Deixe em branco para manter" />
+                <label class="form-label" for="confirmarSenhaPerfil">Confirmar nova senha</label>
+                <input id="confirmarSenhaPerfil" type="password" name="confirmarSenha" />
+                <button type="submit" class="btn">Salvar alterações</button>
+              </form>
+              <p><strong>Tipo:</strong> <%= usuario.tipoUsuario %></p>
+              <p><strong>Perfil:</strong> <%= usuario.perfilAcesso === 'administrador' ? 'Administrador' : 'Usuário' %></p>
+            </div>
+          </article>
+        </section>
+
+        <section class="panel-section">
+          <article class="card danger-zone">
+            <h2>Excluir conta</h2>
+            <p>Essa ação remove sua conta, pedidos e dados relacionados permanentemente.</p>
+            <form action="/perfil/excluir" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir sua conta? Essa ação não pode ser desfeita.');">
+              <button type="submit" class="btn btn-danger">Excluir minha conta</button>
+            </form>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

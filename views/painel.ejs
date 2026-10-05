@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar-panel">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario.nome %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <a href="/painel" class="nav-link active">Painel</a>
+          <% if (usuario.perfilAcesso === 'administrador') { %>
+            <a href="/administrador" class="nav-link">Administração</a>
+          <% } %>
+          <% if (usuario.tipoUsuario !== 'voluntario') { %>
+            <a href="/pedir-ajuda" class="nav-link">Pedir ajuda</a>
+            <a href="/meus-pedidos" class="nav-link">Meus pedidos</a>
+          <% } %>
+          <a href="/ajudar" class="nav-link">Ajudar</a>
+          <% if (usuario.tipoUsuario === 'voluntario') { %>
+            <a href="/relatorio" class="nav-link">Relatório do ajudante</a>
+          <% } %>
+          <a href="/pedidos" class="nav-link">Pedidos</a>
+          <a href="/notificacoes" class="nav-link">Notificações</a>
+          <a href="/conversas" class="nav-link">Mensagens</a>
+          <a href="/perfil" class="nav-link">Perfil</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div>
+            <h1>Painel</h1>
+          </div>
+          <div class="header-actions">
+            <a class="btn" href="/notificacoes">Ver notificações</a>
+          </div>
+        </section>
+
+        <section class="summary-strip">
+          <article class="summary-card primary-metric">
+            <span class="summary-label">Usuários cadastrados</span>
+            <strong><%= indicadores.usuarios %></strong>
+            <small>Total registrado</small>
+          </article>
+          <article class="summary-card sucesso-metric">
+            <span class="summary-label">Ajudas concluídas</span>
+            <strong><%= indicadores.concluidos %></strong>
+            <small>Total concluído</small>
+          </article>
+          <article class="summary-card accent-metric">
+            <span class="summary-label">Pedidos ativos</span>
+            <strong><%= indicadores.pedidosAtivos %></strong>
+            <small>Em aberto ou em andamento</small>
+          </article>
+        </section>
+
+        <section class="panel-section metric-grid">
+          <article class="card painel-highlight">
+            <% if (usuario.tipoUsuario === 'voluntario') { %>
+              <h2>Relatório do ajudante</h2>
+              <p>Veja o histórico das ajudas que você assumiu, suas situações e as avaliações recebidas.</p>
+              <div class="pedido-actions"><a class="btn" href="/relatorio">Abrir relatório</a></div>
+            <% } else { %>
+              <h2>Ações</h2>
+              <p>Publique um pedido e acompanhe as respostas da comunidade.</p>
+              <div class="pedido-actions">
+                <a class="btn" href="/pedir-ajuda">Publicar pedido</a>
+                <a class="btn btn-secondary" href="/pedidos">Ir para o pedidos</a>
+              </div>
+            <% } %>
+          </article>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-heading compact-heading">
+            <div>
+              <h2>Notificações recentes</h2>
+            </div>
+          </div>
+          <div class="notificacao-list">
+            <% notificacoes.forEach(function(notificacao) { %>
+              <article class="notificacao-card">
+                <strong><%= notificacao.titulo %>:</strong>
+                <span><%= notificacao.mensagem %></span>
+              </article>
+            <% }) %>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mensagens - ConectaVida</title>
+    <link rel="stylesheet" href="/css/estilos.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar-panel">
+        <div class="sidebar-header">
+          <div class="brand-icon">
+            <img src="/img/marca.svg" alt="ConectaVida" class="app-logo" />
+          </div>
+          <div>
+            <p class="brand-kicker">ConectaVida</p>
+            <p class="sidebar-usuario">Olá, <%= usuario.nome %></p>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <a href="/painel" class="nav-link">Painel</a>
+          <a href="/pedidos" class="nav-link">Pedidos</a>
+          <% if (usuario.tipoUsuario === 'voluntario') { %>
+            <a href="/relatorio" class="nav-link">Relatório do ajudante</a>
+          <% } %>
+          <a href="/notificacoes" class="nav-link">Notificações</a>
+          <a href="/conversas" class="nav-link active">Mensagens</a>
+          <a href="/perfil" class="nav-link">Perfil</a>
+          <a href="/sair" class="nav-link logout-link">Sair</a>
+        </nav>
+      </aside>
+
+      <main class="content-panel">
+        <section class="page-header">
+          <div>
+            <h1>Mensagens</h1>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-secondary" href="/painel">Voltar</a>
+          </div>
+        </section>
+
+        <section class="panel-section">
+          <article class="conversas-card">
+            <% if (!conversas || !conversas.length) { %>
+              <div class="empty-panel">
+                <h3>Você ainda não tem conversas</h3>
+                <p>Quando um pedido for aceito por um ajudante, a conversa aparecerá aqui.</p>
+              </div>
+            <% } else { %>
+              <div class="conversas-list">
+                <% conversas.forEach(function(conversa) { %>
+                  <div class="conversas-conversa">
+                    <div class="conversas-conversa-head">
+                      <strong><%= usuario.tipoUsuario === 'voluntario' ? conversa.nomeSolicitante : conversa.nomeVoluntario %></strong>
+                      <span class="badge-pill">Pedido #<%= String(conversa.idPedido).slice(-6) %></span>
+                    </div>
+                    <p><%= conversa.mensagens && conversa.mensagens.length ? conversa.mensagens[0].mensagem : 'Nenhuma mensagem ainda.' %></p>
+                    <div class="conversas-inline-messages">
+                      <% if (conversa.mensagens && conversa.mensagens.length) { %>
+                        <% conversa.mensagens.forEach(function(mensagem) { %>
+                          <div class="conversas-mensagem-row">
+                            <span class="conversas-author"><%= mensagem.nomeRemetente %></span>
+                            <span class="conversas-text"><%= mensagem.mensagem %></span>
+                          </div>
+                        <% }) %>
+                      <% } %>
+                    </div>
+                    <form class="conversas-form" action="/conversas" method="POST">
+                      <input type="hidden" name="idPedido" value="<%= conversa.idPedido %>" />
+                      <textarea name="mensagem" placeholder="Escreva sua mensagem" required></textarea>
+                      <button type="submit" class="btn btn-sm">Enviar mensagem</button>
+                    </form>
+                    <% if (usuario.tipoUsuario === 'voluntario') { %>
+                      <form class="pedido-actions compact-actions" action="/pedido/<%= conversa.idPedido %>/bloquear" method="POST">
+                        <label class="input-label" for="motivoBloqueio-<%= conversa.idPedido %>">Bloquear usuário</label>
+                        <select id="motivoBloqueio-<%= conversa.idPedido %>" name="motivo" required>
+                          <option value="">Selecione um motivo</option>
+                          <option>Violação de regras</option>
+                          <option>Falta de educação</option>
+                          <option>Pedido falso</option>
+                        </select>
+                        <button type="submit" class="btn btn-secondary btn-sm">Bloquear usuário</button>
+                      </form>
+                    <% } %>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <%- include('componentes/rodape') %>
+  </body>
+</html>

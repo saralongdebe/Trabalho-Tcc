@@ -21,12 +21,12 @@
         <% if (erro) { %><p class="erro"><%= erro %></p><% } %>
 
         <form action="/cadastro" method="POST" novalidate class="acesso-form">
-          <input type="text" name="nome" placeholder="Nome" required />
-          <input type="email" name="email" placeholder="E-mail" />
-          <input type="password" name="senha" placeholder="Senha" />
-          <input type="password" name="confirmarSenha" placeholder="Confirmar senha" />
-          <input type="text" name="cidade" placeholder="Bairro / localidade" required />
-          <input type="text" name="telefone" placeholder="Telefone" required />
+          <input type="text" name="nome" placeholder="Nome" data-pessoa-required required />
+          <input type="email" name="email" placeholder="E-mail" data-pessoa-required required />
+          <input type="password" name="senha" placeholder="Senha" data-pessoa-required required />
+          <input type="password" name="confirmarSenha" placeholder="Confirmar senha" data-pessoa-required required />
+          <input type="text" name="cidade" placeholder="Bairro / localidade" data-pessoa-required required />
+          <input type="text" name="telefone" placeholder="Telefone" data-pessoa-required required />
 
           <div class="form-bloqueio">
             <label class="form-label">Tipo de conta</label>
@@ -74,11 +74,13 @@
       const opcoesConta = document.querySelectorAll('input[name="tipoUsuario"]');
       const camposOng = document.getElementById('camposOng');
       const camposOngObrigatorios = camposOng.querySelectorAll('[data-ong-required]');
+      const camposPessoaObrigatorios = document.querySelectorAll('[data-pessoa-required]');
       function atualizarCamposOng() {
         const tipoSelecionado = document.querySelector('input[name="tipoUsuario"]:checked');
         const ehOng = tipoSelecionado && tipoSelecionado.value === 'ONG';
         camposOng.hidden = !ehOng;
         camposOngObrigatorios.forEach((campo) => { campo.required = ehOng; });
+        camposPessoaObrigatorios.forEach((campo) => { campo.required = !ehOng; });
       }
       opcoesConta.forEach((opcao) => opcao.addEventListener('change', atualizarCamposOng));
       atualizarCamposOng();

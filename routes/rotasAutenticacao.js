@@ -7,6 +7,7 @@ const Bloqueio = require('../models/Bloqueio');
 const exigirAutenticacao = require('../middleware/autenticacao');
 const { obterConversasDoUsuario, enviarMensagemConversa, obterNotificacoes, marcarNotificacaoLida } = require('../estadoAplicacao');
 const { gerarTokenRedefinicao, normalizarEmail, enviarEmailRedefinicao } = require('../utils/correio');
+const { normalizarDadosCadastro, validarDadosCadastro } = require('../utils/cadastro');
 
 const router = express.Router();
 const emailAdministrador = process.env.ADMIN_EMAIL || 'admin@conectavida.com';
@@ -221,30 +222,32 @@ router.get('/cadastro', (req, res) => {
 
 router.post('/cadastro', async (req, res) => {
   try {
-    const { nome, email, senha, confirmarSenha, cidade, telefone, tipoUsuario, tipoConta, tipo, nomeInstituicao, cnpj, nomeResponsavel, telefoneInstituicao, bairroAtuacao } = req.body;
-    if (senha !== confirmarSenha) return res.render('cadastro', { usuario: null, erro: 'As senhas não conferem.', paginaAtual: 'cadastro' });
+    const validacao = validarDadosCadastro(req.body);
+    if (!validacao.valido) {
+      return res.render('cadastro', { usuario: null, erro: validacao.erros[0], paginaAtual: 'cadastro' });
+    }
 
-    const usuarioExistente = await Usuario.findOne({ email });
+    const { email, senha, confirmarSenha, tipoUsuario, ...dadosCadastro } = req.body;
+    const dadosNormalizados = normalizarDadosCadastro({ ...dadosCadastro, email, senha, confirmarSenha, tipoUsuario });
+
+    const usuarioExistente = await Usuario.findOne({ email: dadosNormalizados.email });
     if (usuarioExistente) return res.render('cadastro', { usuario: null, erro: 'E-mail já cadastrado.', paginaAtual: 'cadastro' });
 
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
-    const perfilAcesso = email === emailAdministrador ? 'administrador' : 'usuario';
-    const tipoSelecionado = tipoUsuario || tipoConta || tipo || 'solicitante';
-    const ehOng = tipoSelecionado === 'ONG';
-    const tipoResolvido = ehOng ? 'solicitante' : tipoSelecionado;
+    const senhaCriptografada = await bcrypt.hash(dadosNormalizados.senha, 10);
+    const perfilAcesso = dadosNormalizados.email === emailAdministrador ? 'administrador' : 'usuario';
     const usuario = new Usuario({
-      nome: ehOng ? (nomeInstituicao || nome) : nome,
-      email,
+      nome: dadosNormalizados.nome,
+      email: dadosNormalizados.email,
       senha: senhaCriptografada,
-      cidade,
-      telefone: ehOng ? (telefoneInstituicao || telefone) : telefone,
-      tipoUsuario: tipoResolvido,
-      tipo: ehOng ? 'ONG' : 'pessoa_comum',
-      nomeInstituicao: ehOng ? nomeInstituicao : '',
-      cnpj: ehOng ? cnpj : '',
-      nomeResponsavel: ehOng ? nomeResponsavel : '',
-      telefoneInstituicao: ehOng ? telefoneInstituicao : '',
-      bairroAtuacao: ehOng ? bairroAtuacao : '',
+      cidade: dadosNormalizados.cidade,
+      telefone: dadosNormalizados.telefone,
+      tipoUsuario: dadosNormalizados.tipoUsuario,
+      tipo: dadosNormalizados.tipo,
+      nomeInstituicao: dadosNormalizados.nomeInstituicao,
+      cnpj: dadosNormalizados.cnpj,
+      nomeResponsavel: dadosNormalizados.nomeResponsavel,
+      telefoneInstituicao: dadosNormalizados.telefoneInstituicao,
+      bairroAtuacao: dadosNormalizados.bairroAtuacao,
       perfilAcesso
     });
     await usuario.save();
@@ -253,6 +256,7 @@ router.post('/cadastro', async (req, res) => {
     req.session.usuario = sessaoUsuario;
     res.redirect('/painel');
   } catch (erro) {
+    console.error('[cadastro] Erro ao cadastrar usuário:', erro.message);
     res.render('cadastro', { usuario: null, erro: 'Erro ao cadastrar usuário.', paginaAtual: 'cadastro' });
   }
 });

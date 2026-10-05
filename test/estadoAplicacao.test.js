@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { filtrarPedidos, marcarNotificacaoLida, criarConversaDoPedido, obterConversasDoUsuario, enviarMensagemConversa } = require('../estadoAplicacao');
 const Usuario = require('../models/Usuario');
+const { validarDadosCadastro, normalizarDadosCadastro } = require('../utils/cadastro');
 
 test('filtra pedidos por texto e cidade', () => {
   const pedidos = [
@@ -62,4 +63,60 @@ test('usuário sem tipo definido usa solicitante como padrão', () => {
   });
 
   assert.equal(usuario.tipoUsuario, 'solicitante');
+});
+
+test('valida cadastro de pessoa que precisa de ajuda', () => {
+  const resultado = validarDadosCadastro({
+    nome: 'Maria',
+    email: 'maria@email.com',
+    senha: 'senha123',
+    confirmarSenha: 'senha123',
+    cidade: 'Centro',
+    telefone: '11988887777',
+    tipoUsuario: 'solicitante'
+  });
+
+  assert.equal(resultado.valido, true);
+  assert.equal(resultado.dados.tipoUsuario, 'solicitante');
+});
+
+test('valida cadastro de ONG com dados específicos', () => {
+  const resultado = validarDadosCadastro({
+    nome: '',
+    email: 'ong@email.com',
+    senha: 'senha123',
+    confirmarSenha: 'senha123',
+    cidade: 'Centro',
+    telefone: '1133334444',
+    tipoUsuario: 'ONG',
+    nomeInstituicao: 'Casa de Apoio',
+    nomeResponsavel: 'Joana',
+    telefoneInstituicao: '1133334444',
+    bairroAtuacao: 'Centro'
+  });
+
+  assert.equal(resultado.valido, true);
+  assert.equal(resultado.dados.tipoUsuario, 'solicitante');
+  assert.equal(resultado.dados.tipo, 'ONG');
+  assert.equal(resultado.dados.nome, 'Casa de Apoio');
+});
+
+test('normaliza cadastro de ONG mesmo sem nome pessoal', () => {
+  const dados = normalizarDadosCadastro({
+    nome: '',
+    email: 'ong@email.com',
+    senha: 'senha123',
+    confirmarSenha: 'senha123',
+    cidade: 'Centro',
+    telefone: '1133334444',
+    tipoUsuario: 'ONG',
+    nomeInstituicao: 'Casa de Apoio',
+    nomeResponsavel: 'Joana',
+    telefoneInstituicao: '1133334444',
+    bairroAtuacao: 'Centro'
+  });
+
+  assert.equal(dados.nome, 'Casa de Apoio');
+  assert.equal(dados.tipoUsuario, 'solicitante');
+  assert.equal(dados.tipo, 'ONG');
 });

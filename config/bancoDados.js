@@ -13,7 +13,7 @@ async function migrarCampos(colecao, campos) {
 
 async function conectarBanco() {
   try {
-    const uriMongo = process.env.MONGO_URI || process.env.MONGODB_URI;
+ const uriMongo = process.env.MONGODB_URI;
     if (!uriMongo) {
       throw new Error('MONGO_URI ou MONGODB_URI não foi definido. Configure a variável de ambiente do Mongo no Render.');
     }

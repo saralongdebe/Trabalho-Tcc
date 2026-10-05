@@ -1,3 +1,5 @@
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { filtrarPedidos, marcarNotificacaoLida, criarConversaDoPedido, obterConversasDoUsuario, enviarMensagemConversa } = require('../estadoAplicacao');
@@ -119,4 +121,12 @@ test('normaliza cadastro de ONG mesmo sem nome pessoal', () => {
   assert.equal(dados.nome, 'Casa de Apoio');
   assert.equal(dados.tipoUsuario, 'solicitante');
   assert.equal(dados.tipo, 'ONG');
+});
+
+test('página estática de cadastro usa o fluxo correto do backend', () => {
+  const htmlCadastro = fs.readFileSync(path.join(__dirname, '..', 'cadastro.html'), 'utf8');
+
+  assert.match(htmlCadastro, /<form[^>]*action="\/cadastro"/i);
+  assert.match(htmlCadastro, /method="POST"/i);
+  assert.match(htmlCadastro, /href="\/css\/estilos\.css"/i);
 });

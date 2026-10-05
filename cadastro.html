@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cadastro - ConectaVida</title>
-    <link rel="stylesheet" href="/public/css/estilos.css" />
+    <link rel="stylesheet" href="/css/estilos.css" />
   </head>
   <body>
     <header class="topnav">
@@ -23,32 +23,52 @@
       <div class="form-page">
         <h1>Criar conta</h1>
         <p>Escolha seu perfil e comece a se conectar com quem precisa de ajuda.</p>
-        <form novalidate>
+        <form action="/cadastro" method="POST" novalidate>
           <div class="form-grid">
-            <input type="text" placeholder="Nome completo" />
-            <input type="email" placeholder="E-mail" />
-            <input type="password" placeholder="Senha" />
-            <input type="text" placeholder="Bairro / localidade" />
-            <input type="text" placeholder="Telefone" />
+            <input type="text" name="nome" placeholder="Nome completo" required />
+            <input type="email" name="email" placeholder="E-mail" required />
+            <input type="password" name="senha" placeholder="Senha" required />
+            <input type="password" name="confirmarSenha" placeholder="Confirmar senha" required />
+            <input type="text" name="cidade" placeholder="Bairro / localidade" required />
+            <input type="text" name="telefone" placeholder="Telefone" required />
           </div>
+
           <div class="field-group">
             <label>Tipo de usuário</label>
             <div class="radio-group">
               <label class="radio-card">
-                <input type="radio" name="tipoUsuario" checked />
+                <input type="radio" name="tipoUsuario" value="solicitante" checked />
                 <div class="label-content">
                   <span>❤️ Preciso de ajuda</span>
                 </div>
               </label>
               <label class="radio-card">
-                <input type="radio" name="tipoUsuario" />
+                <input type="radio" name="tipoUsuario" value="voluntario" />
                 <div class="label-content">
                   <span>🤝 Quero ser voluntário</span>
                 </div>
               </label>
+              <label class="radio-card">
+                <input type="radio" name="tipoUsuario" value="ONG" />
+                <div class="label-content">
+                  <span>🏢 Sou ONG / Instituição</span>
+                </div>
+              </label>
             </div>
           </div>
-          <a href="/painel.html" class="btn">Criar Conta</a>
+
+          <div class="field-group campos-ong" id="camposOng" hidden>
+            <h2>Dados da ONG / Instituição</h2>
+            <div class="form-grid">
+              <input type="text" name="nomeInstituicao" placeholder="Nome da ONG / Instituição" />
+              <input type="text" name="cnpj" placeholder="CNPJ (opcional)" />
+              <input type="text" name="nomeResponsavel" placeholder="Nome do responsável" />
+              <input type="text" name="telefoneInstituicao" placeholder="Telefone / WhatsApp da ONG" />
+              <input type="text" name="bairroAtuacao" placeholder="Bairro de atuação" />
+            </div>
+          </div>
+
+          <button type="submit" class="btn">Criar Conta</button>
         </form>
         <div class="form-footer">
           <a href="/entrar.html">Já tem conta? Entrar</a>
@@ -56,5 +76,28 @@
         </div>
       </div>
     </main>
+
+    <script>
+      const opcoesConta = document.querySelectorAll('input[name="tipoUsuario"]');
+      const camposOng = document.getElementById('camposOng');
+      const camposOngObrigatorios = camposOng.querySelectorAll('input');
+      const camposPessoaObrigatorios = document.querySelectorAll('input[name="nome"], input[name="email"], input[name="senha"], input[name="confirmarSenha"], input[name="cidade"], input[name="telefone"]');
+
+      function atualizarCamposOng() {
+        const tipoSelecionado = document.querySelector('input[name="tipoUsuario"]:checked');
+        const ehOng = tipoSelecionado && tipoSelecionado.value === 'ONG';
+
+        camposOng.hidden = !ehOng;
+        camposOngObrigatorios.forEach((campo) => {
+          campo.required = ehOng;
+        });
+        camposPessoaObrigatorios.forEach((campo) => {
+          campo.required = !ehOng;
+        });
+      }
+
+      opcoesConta.forEach((opcao) => opcao.addEventListener('change', atualizarCamposOng));
+      atualizarCamposOng();
+    </script>
   </body>
 </html>

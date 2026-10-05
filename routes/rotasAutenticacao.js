@@ -227,14 +227,16 @@ router.post('/cadastro', async (req, res) => {
       return res.render('cadastro', { usuario: null, erro: validacao.erros[0], paginaAtual: 'cadastro' });
     }
 
-    const { email, senha, confirmarSenha, tipoUsuario, ...dadosCadastro } = req.body;
-    const dadosNormalizados = normalizarDadosCadastro({ ...dadosCadastro, email, senha, confirmarSenha, tipoUsuario });
+    const dadosNormalizados = normalizarDadosCadastro(req.body);
 
     const usuarioExistente = await Usuario.findOne({ email: dadosNormalizados.email });
-    if (usuarioExistente) return res.render('cadastro', { usuario: null, erro: 'E-mail já cadastrado.', paginaAtual: 'cadastro' });
+    if (usuarioExistente) {
+      return res.render('cadastro', { usuario: null, erro: 'E-mail já cadastrado.', paginaAtual: 'cadastro' });
+    }
 
     const senhaCriptografada = await bcrypt.hash(dadosNormalizados.senha, 10);
     const perfilAcesso = dadosNormalizados.email === emailAdministrador ? 'administrador' : 'usuario';
+
     const usuario = new Usuario({
       nome: dadosNormalizados.nome,
       email: dadosNormalizados.email,
@@ -250,6 +252,7 @@ router.post('/cadastro', async (req, res) => {
       bairroAtuacao: dadosNormalizados.bairroAtuacao,
       perfilAcesso
     });
+
     await usuario.save();
 
     const sessaoUsuario = usuario.toObject ? usuario.toObject() : usuario;

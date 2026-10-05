@@ -13,7 +13,11 @@ async function migrarCampos(colecao, campos) {
 
 async function conectarBanco() {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/conectavida');
+    const uriMongo = process.env.MONGO_URI || process.env.MONGODB_URI;
+    if (!uriMongo) {
+      throw new Error('MONGO_URI ou MONGODB_URI não foi definido. Configure a variável de ambiente do Mongo no Render.');
+    }
+    await mongoose.connect(uriMongo);
     await Promise.all([
       migrarCampos('users', {
         name: 'nome',
